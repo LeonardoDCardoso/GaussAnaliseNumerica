@@ -15,10 +15,10 @@ import javax.swing.JOptionPane;
 public class GaussAnaliseNumerica {
     
     private static String solucao="";
-    private static String texto="\t \tMatriz Aumentada \n";
+    private static String texto="";
     private int dimensao;      
-    private double  matriz[][]; 
-    private double  b[];    
+    private static double  matriz[][]; 
+    private static double  b[];    
     private  double  x[];
     private DecimalFormat df = new DecimalFormat("#.00");
 
@@ -29,20 +29,36 @@ public class GaussAnaliseNumerica {
         this.x = x;
     }
 
+    public static double[][] getMatriz() {
+        return matriz;
+    }
+
+    public static double[] getB() {
+        return b;
+    }
+    
     public static String getTexto() {
         return texto;
     }    
 
+    public static void setTexto(String texto) {
+        GaussAnaliseNumerica.texto = texto;
+    }
+
     public static String getSolucao() {
         return solucao;
     }    
+
+    public static void setSolucao(String solucao) {
+        GaussAnaliseNumerica.solucao = solucao;
+    }
     
     //Este metodo mostra a matriz aumentada
     public void Listarmatriz(){
         
-        texto += "---------------------------------------------------------\n";
+        texto += "------------------------------------------------------------------------------------------------------------------------------\n";
         for(int linha = 0; linha < dimensao; linha++){
-            texto += "\t";
+            texto += "\t \t";
             for(int coluna = 0; coluna < dimensao; coluna++){
                 if(matriz[linha][coluna]==0.0){
                     texto += 0+"\t";
@@ -57,7 +73,7 @@ public class GaussAnaliseNumerica {
             }
             texto += "\n";
         }
-        texto += "---------------------------------------------------------\n";
+        texto += "------------------------------------------------------------------------------------------------------------------------------\n";
     }    
    
     //Este metodo troca as linhas indicadas por parametro
@@ -86,25 +102,31 @@ public class GaussAnaliseNumerica {
                     indexMaior = i;
                 }
             }
-//            Listarmatriz();
+            if(matriz[indexMaior][k]!=0){
             if(k!=indexMaior){
-                texto += "\tTroca de Linhas: L"+(k+1)+" por L"+(indexMaior+1)+"\n";
+                texto += "\t\t               Troca de Linhas: L"+(k+1)+" por L"+(indexMaior+1)+"\n";
                 TrocarLinhas(k, indexMaior);
-                texto += "\tNova Matriz com linhas trocadas\n";
+                texto += "\t \t               Nova Matriz com linhas trocadas\n";
                 Listarmatriz();
             }
-            texto += "\tOperacao entre Linhas\n";
+            texto += "\t \t "+"                  Operacao entre Linhas\n";
             for(int i = (k + 1); i < dimensao; i++){
                 double m = matriz[i][k] / matriz[k][k];
                 matriz[i][k] = 0;            
                 for(int j = (k + 1); j < dimensao; j++){
-                    
-                    matriz[i][j] = matriz[i][j] - m * matriz[k][j];
+//                    System.out.println("....."+df.format(matriz[i][j] - m * matriz[k][j]));
+                    if(df.format(matriz[i][j] - m * matriz[k][j]).equalsIgnoreCase("-.00")){
+                        matriz[i][j] = 0;
+                    }else{
+                        matriz[i][j] = matriz[i][j] - m * matriz[k][j];
+//                    System.out.println("i"+i+"j"+j+matriz[i][j]);
+                    }
                 }
-                texto += "\tL'"+(i+1)+"=L"+(i+1)+"-("+df.format(m)+"*L"+(k+1)+")\n";
+                texto += "\t \t \t L'"+(i+1)+"=L"+(i+1)+"-("+df.format(m)+"*L"+(k+1)+")\n";
                 b[i] = b[i] - m * b[k];
             }
             Listarmatriz();
+            }
         }
     }
     
@@ -116,12 +138,15 @@ public class GaussAnaliseNumerica {
             if(matriz[k][k]==0){
                 return false;
             }
+            texto += "\t \t "+"                  Operacao entre Linhas\n";
+            
             for(int i = (k + 1); i < dimensao; i++){
                 double m = matriz[i][k] / matriz[k][k];
                 matriz[i][k]  = 0;            
                 for(int j = (k + 1); j < dimensao; j++){
                     matriz[i][j] = matriz[i][j] - m * matriz[k][j];
                 }
+                texto += "\t \t \t L'"+(i+1)+"=L"+(i+1)+"-("+df.format(m)+"*L"+(k+1)+")\n";
                 b[i] = b[i] - m * b[k];
             }
             Listarmatriz();
@@ -130,15 +155,13 @@ public class GaussAnaliseNumerica {
     }
     
     public int VerificarTipo(){
-        if((df.format(matriz[dimensao-1][dimensao-1])).equalsIgnoreCase("-.00")){
-            JOptionPane.showMessageDialog(null,"ok");
-            if(b[dimensao-1]==(-.00)){
+        if(matriz[dimensao-1][dimensao-1]==0.0){
+            if(b[dimensao-1]==(0.0)){
                 return 1;
             }else{
                 return 2;
             }
         }
-        JOptionPane.showMessageDialog(null,matriz[dimensao-1][dimensao-1]);
         return 3;
     }
     
@@ -162,36 +185,13 @@ public class GaussAnaliseNumerica {
     public boolean MostrarResultados(){
         solucao += "\n Solucao";
         for(int i = 0; i < dimensao; i++){
-            
-            solucao += "\n x["+(i+1)+"] = "+x[i];
+            if(x[i]==0.0){
+                solucao += "\n x["+(i+1)+"] = "+0;
+            }else{
+            solucao += "\n x["+(i+1)+"] = "+df.format(x[i]);
+            }
         }
         return true;
-    }
-    
-    public static void main(String[] args) {
-        int n = 3; 
-
-        double  a[][] = {{1, -1, 2},
-                         {2, -2, -1},
-                         {-2, -5, 3}};
-        
-        double  b[]   = { 2, 0,
-                          3};
-
-        double  x[]   = new double[n];
-
-       GaussAnaliseNumerica MeuSistema = new GaussAnaliseNumerica(n, a, b, x);
-
-
-        MeuSistema.Listarmatriz();             
-        boolean bol;       
-        bol = MeuSistema.Gauss();
-        System.out.println("Matriz A e vetor B após eliminação de Gauss.");
-        MeuSistema.Listarmatriz();             
-
-        MeuSistema.ResolucaoDoSistema();    
-        MeuSistema.MostrarResultados();
-        System.out.println(bol);
     }
     
 }
