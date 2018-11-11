@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author Cardoso
+ * @author
  */
 public class GaussAnaliseNumerica {
     
@@ -114,12 +114,10 @@ public class GaussAnaliseNumerica {
                 double m = matriz[i][k] / matriz[k][k];
                 matriz[i][k] = 0;            
                 for(int j = (k + 1); j < dimensao; j++){
-//                    System.out.println("....."+df.format(matriz[i][j] - m * matriz[k][j]));
                     if(df.format(matriz[i][j] - m * matriz[k][j]).equalsIgnoreCase("-.00")){
                         matriz[i][j] = 0;
                     }else{
                         matriz[i][j] = matriz[i][j] - m * matriz[k][j];
-//                    System.out.println("i"+i+"j"+j+matriz[i][j]);
                     }
                 }
                 texto += "\t \t \t L'"+(i+1)+"=L"+(i+1)+"-("+df.format(m)+"*L"+(k+1)+")\n";

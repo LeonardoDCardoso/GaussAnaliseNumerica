@@ -19,7 +19,7 @@ import javax.swing.JTextField;
  */
 /**
  *
- * @author Cardoso
+ * @author 
  */
 public class Tela_matriz extends javax.swing.JFrame {
 
@@ -41,6 +41,7 @@ public class Tela_matriz extends javax.swing.JFrame {
         this.pnlBase.revalidate();
     }
 
+    //metodo que retorna um arraz bidimensional com os valores inseridos da matriz
     public double[][] buscarCorpo() {
         int linha = (int) jspnLinha.getValue();
         this.linha = linha;
@@ -57,6 +58,7 @@ public class Tela_matriz extends javax.swing.JFrame {
         return aux;
     }
 
+    //metodo que retorna um arraz com os valores inseridos do vetor b
     public double[] buscarB() {
         int linha = (int) jspnLinha.getValue();
 
@@ -71,6 +73,7 @@ public class Tela_matriz extends javax.swing.JFrame {
         return aux;
     }
 
+    //metodo que gera os componentes dinamicamente
     private Component adicionarPaineis() {
 
         int linha = (int) jspnLinha.getValue();
@@ -304,7 +307,7 @@ public class Tela_matriz extends javax.swing.JFrame {
         
         int n = (int) jspnLinha.getValue();
         double[][] matriz = this.buscarCorpo();
-        double[] b = buscarB();
+        double[] b = this.buscarB();
         double x[] = new double[n];
         GaussAnaliseNumerica MeuSistema = new GaussAnaliseNumerica(n, matriz, b, x);
         GaussAnaliseNumerica.setTexto("\t \t \t Matriz Aumentada \n");
@@ -315,11 +318,6 @@ public class Tela_matriz extends javax.swing.JFrame {
                     MeuSistema.ResolucaoDoSistema();
                     MeuSistema.MostrarResultados();
                     txtresultado.append(GaussAnaliseNumerica.getTexto());
-//                    txtsolucao.append(GaussAnaliseNumerica.getSolucao());
-                    double  matri[][] = GaussAnaliseNumerica.getMatriz();
-                    double  bb[] = GaussAnaliseNumerica.getB();
-                    JOptionPane.showMessageDialog(null, matri[n-1][n-1]+"b:"+bb[n-1]);
-                    JOptionPane.showMessageDialog(null, MeuSistema.VerificarTipo());
                     if(MeuSistema.VerificarTipo()==1){
                            txtsolucao.append("Sistema indeterminado");
                          }else if(MeuSistema.VerificarTipo()==2){
